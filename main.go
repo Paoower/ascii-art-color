@@ -10,12 +10,6 @@ import (
 
 const NONE = "\033[0m"
 
-// Basic case : go run . --color=<color> <substring to be colored> "something" - len 4
-// Basic case w style : go run . --color=<color> <substring to be colored> "something" "banner" - len 5
-// No sub : go run . --color=<color> "something" - len 3 OK
-// Basic ascii art : go run . "Hello" - len 2 OK
-// Ascii art with banner: go run . "Hello" standard - len 3 OK
-
 func main() {
 	colors := make(map[string]string)
 	colors["RED"] = "\033[31;1m"
@@ -31,6 +25,12 @@ func main() {
 	log.SetFlags(log.Ltime)
 	log.SetPrefix("ascii-art-color:")
 	var lines []string
+
+	if len(args) > 5 {
+		fmt.Println("Usage: go run . [OPTION] [STRING]")
+		fmt.Println()
+		fmt.Println(`EX: go run . --color=<color> <substring to be colored> "something"`)
+	}
 
 	if len(args) == 1 {
 		return
