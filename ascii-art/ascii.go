@@ -7,61 +7,71 @@ import (
 )
 
 const LETTER_HEIGHT = 8
+const NONE = "\033[0m"
 
-func GetAscii(input, style string) string {
-	bannerFile, err := getBannerFile(style)
-	if err != nil {
-		return ""
+func GetColoredAscii(input, style, substr, color string) []string {
+	bannerFile := ""
+	switch style {
+	case "standard":
+		bannerFile = "banners/standard.txt"
+	case "shadow":
+		bannerFile = "banners/shadow.txt"
+	case "thinkertoy":
+		bannerFile = "banners/thinkertoy.txt"
+	default:
+		bannerFile = ""
 	}
-	lines := make([]string, 0)
-	words := strings.Split(input, "\\n")
 
-	for _, word := range words {
-		if word == "" {
+	lines := make([]string, 0)
+	inputLines := strings.Split(input, "\\n")
+
+	//Find all indexes where theres substr
+
+	times := strings.Count(input, substr)
+	var indexes []int
+
+	t := input
+	for i := 0; i < times; i++ {
+		idx := strings.Index(t, substr)
+		indexes = append(indexes, idx)
+		t = strings.Replace(t, substr, strings.Repeat("a", len(substr)), 1)
+	}
+
+	fmt.Println(indexes)
+
+	for _, line := range inputLines {
+		if line == "" {
 			lines = append(lines, "")
 			continue
 		}
-		lines = append(lines, getWord(word, bannerFile)...)
+		linesOfline := getLine(line, bannerFile, substr, color, indexes)
+		lines = append(lines, linesOfline...)
 	}
 
-	str := ""
-	for _, line := range lines {
-		str += line + "\n"
-	}
-
-	return str
+	return lines
 }
 
-func fileOpen(filename string) string {
-	f, err := os.ReadFile(filename)
+func getLine(input, bannerFile, substr, color string, indexes []int) []string {
+	lines := make([]string, 8)
+
+	f, err := os.ReadFile(bannerFile)
 	if err != nil {
-		return ""
+		return []string{}
 	}
 	// Normalize line endings to Unix-style
 	content := strings.ReplaceAll(string(f), "\r\n", "\n")
-	return content
-}
 
-func getBannerFile(style string) (string, error) {
-	switch style {
-	case "standard":
-		return "banners/standard.txt", nil
-	case "shadow":
-		return "banners/shadow.txt", nil
-	case "thinkertoy":
-		return "banners/thinkertoy.txt", nil
-	default:
-		return "", fmt.Errorf("unknown style: %s. Available styles: standard, shadow, thinkertoy", style)
-	}
-}
-
-func getWord(input string, bannerFile string) []string {
-	lines := make([]string, 8)
-	content := fileOpen(bannerFile)
-
-	for _, char := range input {
-		c := strings.Split(GetLetter(content, int(char)), "\n")
+	for j, char := range input {
+		c := strings.Split(getLetter(content, int(char)), "\n")
 		for i := 0; i < len(lines); i++ {
+			for _, n := range indexes {
+				if j == n {
+					c[i] = color + c[i]
+				}
+				if j == n+len(substr)-1 {
+					c[i] += NONE
+				}
+			}
 			lines[i] += c[i]
 		}
 	}
@@ -69,7 +79,7 @@ func getWord(input string, bannerFile string) []string {
 	return lines
 }
 
-func GetLetter(content string, ascii int) string {
+func getLetter(content string, ascii int) string {
 	if ascii == 32 {
 		s := ""
 		for i := 0; i < 8; i++ {
