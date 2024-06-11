@@ -1,7 +1,6 @@
 package asciiart
 
 import (
-	"fmt"
 	"os"
 	"strings"
 )
@@ -36,8 +35,6 @@ func GetColoredAscii(input, style, substr, color string) []string {
 		indexes = append(indexes, idx)
 		t = strings.Replace(t, substr, strings.Repeat("a", len(substr)), 1)
 	}
-
-	fmt.Println(indexes)
 
 	for _, line := range inputLines {
 		if line == "" {
