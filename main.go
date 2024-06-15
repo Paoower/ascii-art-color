@@ -2,7 +2,8 @@ package main
 
 import (
 	asciiart "ascii-art-color/ascii-art"
-	"fmt"
+	utils "ascii-art-color/utils"
+  "fmt"
 	"log"
 	"os"
 	"strings"
@@ -42,18 +43,18 @@ func main() {
 
 	if len(args) == 3 {
 		if strings.HasPrefix(args[1], "--color") {
-			lines = asciiart.GetColoredAscii(args[2], "standard", "", colors[strings.ToUpper(strings.TrimPrefix(args[1], "--color="))])
+			lines = asciiart.GetColoredAscii(args[2], "standard", "", utils.GetColor(args[1]))
 		} else {
 			lines = asciiart.GetColoredAscii(args[1], args[2], "", "NONE")
 		}
 	}
 
 	if len(args) == 4 {
-		lines = asciiart.GetColoredAscii(args[3], "standard", args[2], colors[strings.ToUpper(strings.TrimPrefix(args[1], "--color="))])
+		lines = asciiart.GetColoredAscii(args[3], "standard", args[2], utils.GetColor(args[1]))
 	}
 
 	if len(args) == 5 {
-		lines = asciiart.GetColoredAscii(args[3], args[4], args[2], colors[strings.ToUpper(strings.TrimPrefix(args[1], "--color="))])
+		lines = asciiart.GetColoredAscii(args[3], args[4], args[2], utils.GetColor(args[1]))
 	}
 
 	for _, l := range lines {
