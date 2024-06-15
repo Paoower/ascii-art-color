@@ -26,6 +26,26 @@ func GetColoredAscii(input, style, substr, color string) []string {
 
 	//Find all indexes where theres substr
 
+	for _, line := range inputLines {
+		if line == "" {
+			lines = append(lines, "")
+			continue
+		}
+		linesOfline := getLine(line, bannerFile, substr, color)
+		lines = append(lines, linesOfline...)
+	}
+
+	return lines
+}
+
+func getLine(input, bannerFile, substr, color string) []string {
+	lines := make([]string, 8)
+
+	f, err := os.ReadFile(bannerFile)
+	if err != nil {
+		return []string{}
+	}
+
 	times := strings.Count(input, substr)
 	var indexes []int
 
@@ -36,25 +56,6 @@ func GetColoredAscii(input, style, substr, color string) []string {
 		t = strings.Replace(t, substr, strings.Repeat("a", len(substr)), 1)
 	}
 
-	for _, line := range inputLines {
-		if line == "" {
-			lines = append(lines, "")
-			continue
-		}
-		linesOfline := getLine(line, bannerFile, substr, color, indexes)
-		lines = append(lines, linesOfline...)
-	}
-
-	return lines
-}
-
-func getLine(input, bannerFile, substr, color string, indexes []int) []string {
-	lines := make([]string, 8)
-
-	f, err := os.ReadFile(bannerFile)
-	if err != nil {
-		return []string{}
-	}
 	// Normalize line endings to Unix-style
 	content := strings.ReplaceAll(string(f), "\r\n", "\n")
 
