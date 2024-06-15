@@ -46,7 +46,7 @@ func GetColor(s string) string {
 			vals = append(vals, val)
 		}
 
-		var h, s, l float64
+		h, s, l := vals[0], vals[1], vals[2]
 
 		if strings.Contains(c[0], "%") {
 			h = vals[0] / 100.0
