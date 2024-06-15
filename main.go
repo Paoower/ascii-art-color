@@ -3,7 +3,7 @@ package main
 import (
 	asciiart "ascii-art-color/ascii-art"
 	utils "ascii-art-color/utils"
-  "fmt"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -12,29 +12,15 @@ import (
 const NONE = "\033[0m"
 
 func main() {
-	colors := make(map[string]string)
-	colors["RED"] = "\033[31;1m"
-	colors["GREEN"] = "\033[32;1m"
-	colors["YELLOW"] = "\033[33;1m"
-	colors["ORANGE"] = "\033[33;1m"
-	colors["BLUE"] = "\033[34;1m"
-	colors["PURPLE"] = "\033[35;1m"
-	colors["CYAN"] = "\033[36;1m"
-	colors["GREY"] = "\033[37;1m"
-
 	args := os.Args
 	log.SetFlags(log.Ltime)
 	log.SetPrefix("ascii-art-color:")
 	var lines []string
 
-	if len(args) > 5 {
+	if len(args) > 5 || len(args) == 1 {
 		fmt.Println("Usage: go run . [OPTION] [STRING]")
 		fmt.Println()
 		fmt.Println(`EX: go run . --color=<color> <substring to be colored> "something"`)
-	}
-
-	if len(args) == 1 {
-		return
 	}
 
 	if len(args) == 2 {
@@ -42,19 +28,21 @@ func main() {
 	}
 
 	if len(args) == 3 {
-		if strings.HasPrefix(args[1], "--color") {
+		if strings.HasPrefix(args[1], "--color=") {
 			lines = asciiart.GetColoredAscii(args[2], "standard", "", utils.GetColor(args[1]))
 		} else {
 			lines = asciiart.GetColoredAscii(args[1], args[2], "", "NONE")
 		}
 	}
 
+	color := utils.GetColor(args[1])
+
 	if len(args) == 4 {
-		lines = asciiart.GetColoredAscii(args[3], "standard", args[2], utils.GetColor(args[1]))
+		lines = asciiart.GetColoredAscii(args[3], "standard", args[2], color)
 	}
 
 	if len(args) == 5 {
-		lines = asciiart.GetColoredAscii(args[3], args[4], args[2], utils.GetColor(args[1]))
+		lines = asciiart.GetColoredAscii(args[3], args[4], args[2], color)
 	}
 
 	for _, l := range lines {
