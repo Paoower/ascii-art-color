@@ -2,40 +2,23 @@ package main_test
 
 import (
 	asciiart "ascii-art-color/ascii-art"
+	utils "ascii-art-color/utils"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"testing"
 )
 
 func TestRedHW(t *testing.T) {
-	cmd := exec.Command("go", "run", ".", "--color=red", "Hello world")
-	cmd.Stdin = os.Stdin
-	out, err := cmd.Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	s := string(out)
-
 	input := "Hello world"
-	color := "RED"
-	lines := asciiart.GetColoredAscii(input, "standard", input, getColor(color))
-	str := ""
-	for _, l := range lines {
-		str += l + "\n"
-	}
+	color := "--color=red"
 
-	if str != s {
-		t.Error("\033[31;1mOutput not valid\033[0m")
-	} else {
-		fmt.Println("\033[32;1mValid output\033[0m")
-	}
-}
+	fmt.Println("Input: ", input)
+	fmt.Println("Color: ", strings.TrimPrefix(color, "--color="))
 
-func TestGreen12(t *testing.T) {
-	cmd := exec.Command("go", "run", ".", "--color=green", "1 + 1 = 2")
+	cmd := exec.Command("go", "run", ".", color, input)
 	cmd.Stdin = os.Stdin
 	out, err := cmd.Output()
 	if err != nil {
@@ -44,23 +27,28 @@ func TestGreen12(t *testing.T) {
 
 	s := string(out)
 
-	color := "GREEN"
+	lines := asciiart.GetColoredAscii(input, "standard", input, utils.GetColor(color))
+	str := ""
+	for _, l := range lines {
+		str += l + "\n"
+	}
+
+	if str != s {
+		t.Error("\033[31;1mOutput not valid\033[0m")
+	} else {
+		fmt.Println(str)
+		fmt.Println("\033[32;1mValid output\033[0m")
+	}
+}
+
+func TestGreen11(t *testing.T) {
 	input := "1 + 1 = 2"
-	lines := asciiart.GetColoredAscii(input, "standard", input, getColor(color))
-	str := ""
-	for _, l := range lines {
-		str += l + "\n"
-	}
+	color := "--color=green"
 
-	if str != s {
-		t.Error("\033[31;1mOutput not valid\033[0m")
-	} else {
-		fmt.Println("\033[32;1mValid output\033[0m")
-	}
-}
+	fmt.Println("Input: ", input)
+	fmt.Println("Color: ", strings.TrimPrefix(color, "--color="))
 
-func TestYellowSpecialChars(t *testing.T) {
-	cmd := exec.Command("go", "run", ".", "--color=yellow", "(%&) ??")
+	cmd := exec.Command("go", "run", ".", color, input)
 	cmd.Stdin = os.Stdin
 	out, err := cmd.Output()
 	if err != nil {
@@ -69,9 +57,7 @@ func TestYellowSpecialChars(t *testing.T) {
 
 	s := string(out)
 
-	color := "YELLOW"
-	input := "(%&) ??"
-	lines := asciiart.GetColoredAscii(input, "standard", input, getColor(color))
+	lines := asciiart.GetColoredAscii(input, "standard", input, utils.GetColor(color))
 	str := ""
 	for _, l := range lines {
 		str += l + "\n"
@@ -80,12 +66,19 @@ func TestYellowSpecialChars(t *testing.T) {
 	if str != s {
 		t.Error("\033[31;1mOutput not valid\033[0m")
 	} else {
+		fmt.Println(str)
 		fmt.Println("\033[32;1mValid output\033[0m")
 	}
 }
 
-func TestRandomStringColor1(t *testing.T) {
-	cmd := exec.Command("go", "run", ".", "--color=blue", "abcDEF")
+func TestYellowChars(t *testing.T) {
+	input := "1 + 1 = 2"
+	color := "--color=yellow"
+
+	fmt.Println("Input: ", input)
+	fmt.Println("Color: ", strings.TrimPrefix(color, "--color="))
+
+	cmd := exec.Command("go", "run", ".", color, input)
 	cmd.Stdin = os.Stdin
 	out, err := cmd.Output()
 	if err != nil {
@@ -94,9 +87,7 @@ func TestRandomStringColor1(t *testing.T) {
 
 	s := string(out)
 
-	color := "BLUE"
-	input := "abcDEF"
-	lines := asciiart.GetColoredAscii(input, "standard", input, getColor(color))
+	lines := asciiart.GetColoredAscii(input, "standard", input, utils.GetColor(color))
 	str := ""
 	for _, l := range lines {
 		str += l + "\n"
@@ -105,12 +96,17 @@ func TestRandomStringColor1(t *testing.T) {
 	if str != s {
 		t.Error("\033[31;1mOutput not valid\033[0m")
 	} else {
+		fmt.Println(str)
 		fmt.Println("\033[32;1mValid output\033[0m")
 	}
 }
 
-func TestRandomStringColor2(t *testing.T) {
-	cmd := exec.Command("go", "run", ".", "--color=purple", "abc  123")
+func TestSecondToLastLetter(t *testing.T) {
+	input := "welcome"
+	substr := "elcome"
+	color := "--color=green"
+
+	cmd := exec.Command("go", "run", ".", color, substr, input)
 	cmd.Stdin = os.Stdin
 	out, err := cmd.Output()
 	if err != nil {
@@ -119,9 +115,7 @@ func TestRandomStringColor2(t *testing.T) {
 
 	s := string(out)
 
-	color := "PURPLE"
-	input := "abc  123"
-	lines := asciiart.GetColoredAscii(input, "standard", input, getColor(color))
+	lines := asciiart.GetColoredAscii(input, "standard", substr, utils.GetColor(color))
 	str := ""
 	for _, l := range lines {
 		str += l + "\n"
@@ -130,16 +124,17 @@ func TestRandomStringColor2(t *testing.T) {
 	if str != s {
 		t.Error("\033[31;1mOutput not valid\033[0m")
 	} else {
+		fmt.Println(str)
 		fmt.Println("\033[32;1mValid output\033[0m")
 	}
 }
 
-func TestRandomStringSubstr1(t *testing.T) {
-	color := "CYAN"
-	input := "hello12,:?"
-	substr := "12"
+func TestLastLetter(t *testing.T) {
+	input := "wlcome"
+	substr := "e"
+	color := "--color=purple"
 
-	cmd := exec.Command("go", "run", ".", "--color=cyan", substr, input)
+	cmd := exec.Command("go", "run", ".", color, substr, input)
 	cmd.Stdin = os.Stdin
 	out, err := cmd.Output()
 	if err != nil {
@@ -148,7 +143,7 @@ func TestRandomStringSubstr1(t *testing.T) {
 
 	s := string(out)
 
-	lines := asciiart.GetColoredAscii(input, "standard", substr, getColor(color))
+	lines := asciiart.GetColoredAscii(input, "standard", substr, utils.GetColor(color))
 	str := ""
 	for _, l := range lines {
 		str += l + "\n"
@@ -157,15 +152,17 @@ func TestRandomStringSubstr1(t *testing.T) {
 	if str != s {
 		t.Error("\033[31;1mOutput not valid\033[0m")
 	} else {
+		fmt.Println(str)
 		fmt.Println("\033[32;1mValid output\033[0m")
 	}
 }
 
-func TestRandomStringSubstr2(t *testing.T) {
-	input := "efUUEF;;,//)hello12,:?"
-	substr := "//)"
+func TestTwoLetters(t *testing.T) {
+	input := "welcome"
+	substr := "lc"
+	color := "--color=orange"
 
-	cmd := exec.Command("go", "run", ".", "--color=green", substr, input)
+	cmd := exec.Command("go", "run", ".", color, substr, input)
 	cmd.Stdin = os.Stdin
 	out, err := cmd.Output()
 	if err != nil {
@@ -174,9 +171,7 @@ func TestRandomStringSubstr2(t *testing.T) {
 
 	s := string(out)
 
-	color := "GREEN"
-
-	lines := asciiart.GetColoredAscii(input, "standard", substr, getColor(color))
+	lines := asciiart.GetColoredAscii(input, "standard", substr, utils.GetColor(color))
 	str := ""
 	for _, l := range lines {
 		str += l + "\n"
@@ -185,28 +180,173 @@ func TestRandomStringSubstr2(t *testing.T) {
 	if str != s {
 		t.Error("\033[31;1mOutput not valid\033[0m")
 	} else {
+		fmt.Println(str)
 		fmt.Println("\033[32;1mValid output\033[0m")
 	}
 }
 
-func getColor(c string) string {
-	colors := make(map[string]string)
-	colors["RED"] = "\033[31;1m"
-	colors["GREEN"] = "\033[32;1m"
-	colors["YELLOW"] = "\033[33;1m"
-	colors["ORANGE"] = "\033[33;1m"
-	colors["BLUE"] = "\033[34;1m"
-	colors["PURPLE"] = "\033[35;1m"
-	colors["CYAN"] = "\033[36;1m"
-	colors["GREY"] = "\033[37;1m"
+func TestHeyGuys(t *testing.T) {
+	input := "HeY GuYs"
+	substr := "GuYs"
+	color := "--color=orange"
 
-	co := ""
-
-	for k, v := range colors {
-		if k == c {
-			return v
-		}
+	cmd := exec.Command("go", "run", ".", color, substr, input)
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	return co
+	s := string(out)
+
+	lines := asciiart.GetColoredAscii(input, "standard", substr, utils.GetColor(color))
+	str := ""
+	for _, l := range lines {
+		str += l + "\n"
+	}
+
+	if str != s {
+		t.Error("\033[31;1mOutput not valid\033[0m")
+	} else {
+		fmt.Println(str)
+		fmt.Println("\033[32;1mValid output\033[0m")
+	}
+}
+
+func TestRBG(t *testing.T) {
+	input := "RGB()"
+	substr := "B"
+	color := "--color=blue"
+
+	cmd := exec.Command("go", "run", ".", color, substr, input)
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s := string(out)
+
+	lines := asciiart.GetColoredAscii(input, "standard", substr, utils.GetColor(color))
+	str := ""
+	for _, l := range lines {
+		str += l + "\n"
+	}
+
+	if str != s {
+		t.Error("\033[31;1mOutput not valid\033[0m")
+	} else {
+		fmt.Println(str)
+		fmt.Println("\033[32;1mValid output\033[0m")
+	}
+}
+
+func TestRandomString1(t *testing.T) {
+	input := "rdmDZoez"
+	color := "--color=rgb(100, 14, 242)"
+
+	cmd := exec.Command("go", "run", ".", color, input, input)
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s := string(out)
+
+	lines := asciiart.GetColoredAscii(input, "standard", input, utils.GetColor(color))
+	str := ""
+	for _, l := range lines {
+		str += l + "\n"
+	}
+
+	if str != s {
+		t.Error("\033[31;1mOutput not valid\033[0m")
+	} else {
+		fmt.Println(str)
+		fmt.Println("\033[32;1mValid output\033[0m")
+	}
+}
+
+func TestRandomString2(t *testing.T) {
+	input := "hey35 there"
+	color := "--color=rgb(52, 140, 167)"
+
+	cmd := exec.Command("go", "run", ".", color, input, input)
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s := string(out)
+
+	lines := asciiart.GetColoredAscii(input, "standard", input, utils.GetColor(color))
+	str := ""
+	for _, l := range lines {
+		str += l + "\n"
+	}
+
+	if str != s {
+		t.Error("\033[31;1mOutput not valid\033[0m")
+	} else {
+		fmt.Println(str)
+		fmt.Println("\033[32;1mValid output\033[0m")
+	}
+}
+
+func TestRandomString3(t *testing.T) {
+	input := "hey35 ther:;e"
+	color := "--color=hsl(58, 79%, 50%)"
+	substr := "3"
+
+	cmd := exec.Command("go", "run", ".", color, substr, input)
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s := string(out)
+
+	lines := asciiart.GetColoredAscii(input, "standard", substr, utils.GetColor(color))
+	str := ""
+	for _, l := range lines {
+		str += l + "\n"
+	}
+
+	if str != s {
+		t.Error("\033[31;1mOutput not valid\033[0m")
+	} else {
+		fmt.Println(str)
+		fmt.Println("\033[32;1mValid output\033[0m")
+	}
+}
+
+func TestRandomString4(t *testing.T) {
+	input := "hey35"
+	color := "--color=hsl(314, 80%, 24%)"
+	substr := "35"
+
+	cmd := exec.Command("go", "run", ".", color, substr, input)
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s := string(out)
+
+	lines := asciiart.GetColoredAscii(input, "standard", substr, utils.GetColor(color))
+	str := ""
+	for _, l := range lines {
+		str += l + "\n"
+	}
+
+	if str != s {
+		t.Error("\033[31;1mOutput not valid\033[0m")
+	} else {
+		fmt.Println(str)
+		fmt.Println("\033[32;1mValid output\033[0m")
+	}
 }
